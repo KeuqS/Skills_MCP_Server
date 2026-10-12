@@ -1,0 +1,92 @@
+id: django-fullstack
+name: Django Fullstack Developer
+description: Production-grade Django full-stack web application development workflow with ORM optimization, Django REST Framework, authentication, migrations, and pytest-django
+version: "1.0.0"
+skills:
+  # 1. Django ORM optimization
+  - django-orm-optimization
+  - select-related-prefetch-related
+  - query-profiling-n-plus-one
+  # 2. Django REST Framework
+  - djangorestframework
+  - drf-serializers-viewsets
+  - drf-routers-permissions
+  - input-validation-pagination
+  # 3. Authentication and authorization
+  - django-auth-sessions
+  - permission-classes-authorization
+  - object-level-permissions
+  # 4. Database migrations
+  - safe-reversible-migrations
+  - migration-dependency-management
+  - data-migrations-planning
+  # 5. Testing with pytest-django
+  - pytest-django
+  - fixtures-database-isolation
+  - transaction-testing
+  # 6. Full-stack integration
+  - fullstack-integration
+  - django-templates-forms
+  - static-asset-management
+  # Core workflow skills
+  - django
+  - celery
+  - postgresql
+  - redis
+  - ponytail
+  - review
+  - verification-before-completion
+guidelines:
+  - "ORM efficiency: Use select_related() for suitable foreign-key and one-to-one relationships, and prefetch_related() for many-to-many and reverse relationships to eliminate N+1 queries."
+  - "Query inspection: Detect N+1 queries and inspect query performance using query profiling, connection queries logging, and query count assertions in tests."
+  - "Secure settings: Enforce secure production settings with DEBUG=False, environment variable configuration, and production secret management without hardcoded keys."
+  - "Web security: Enforce CSRF protection, secure cookie flags (SESSION_COOKIE_SECURE, CSRF_COOKIE_SECURE), HTTPS redirection, and appropriate security headers (HSTS, CSP, X-Frame-Options)."
+  - "Atomic transactions: Wrap multi-operation database writes in transaction.atomic() to ensure consistency and prevent partial data persistence."
+  - "Boundary validation: Implement robust input validation at serializer, form, and model clean() boundaries with consistent, structured error responses."
+  - "Explicit authorization: Enforce explicit authentication and authorization checks using DRF permission classes, model permissions, and object-level authorization."
+  - "Safe migrations: Create safe, reversible database migrations where practical, manage migration dependencies cleanly, and test data migrations before production rollout without destructive changes."
+  - "Automated testing: Write comprehensive unit and integration tests for models, views, serializers, and APIs using pytest-django, database isolation, fixtures, and regression test suites."
+  - "Observability & safety: Configure structured logging, error handling, and production observability while avoiding hardcoded secrets, unsafe raw SQL, and exposing sensitive endpoint data."
+profiles: []
+stages:
+  orm-optimization:
+    - select-related-prefetch-related
+    - query-profiling-n-plus-one
+    - database-indexing
+    - query-performance-inspection
+  rest-framework:
+    - drf-serializers-viewsets
+    - drf-routers-permissions
+    - input-validation-pagination
+    - api-filtering-versioning
+    - drf-error-responses
+  auth-security:
+    - django-auth-sessions
+    - permission-classes-authorization
+    - object-level-permissions
+    - password-hashing-security
+    - sensitive-endpoints-protection
+  migrations:
+    - safe-reversible-migrations
+    - migration-dependency-management
+    - data-migrations-planning
+    - zero-downtime-schema-changes
+  testing:
+    - tdd
+    - test-driven-development
+    - pytest-django
+    - fixtures-database-isolation
+    - transaction-testing
+    - permission-boundary-regression
+    - qa
+  fullstack-integration:
+    - django-templates-forms
+    - static-asset-management
+    - csrf-form-validation
+    - application-responsibility-separation
+    - ponytail
+    - review
+    - verification-before-completion
+metadata:
+  tags: ["django", "python", "fullstack", "drf", "orm", "pytest-django"]
+  author: "QuirkSphere"
