@@ -1,0 +1,123 @@
+id: ios-swift
+name: iOS Swift & SwiftUI Developer
+description: Production-grade iOS application development workflow using Swift, SwiftUI, structured concurrency, SwiftData, Core Data, and XCTest for building modern, high-performance, and maintainable Apple platform apps
+version: "1.0.0"
+skills:
+  # 1. Swift and Swift Concurrency
+  - swift-syntax-semantics
+  - value-reference-semantics
+  - protocol-oriented-design
+  - async-await-structured-concurrency
+  - task-cancellation-error-propagation
+  - actors-sendable-safety
+  # 2. SwiftUI and state management
+  - swiftui-declarative-views
+  - reusable-components-data-flow
+  - property-wrappers-state-ownership
+  - observation-framework
+  - combine-reactive-streams
+  - navigation-forms-lists
+  - async-ui-updates
+  # 3. Data persistence
+  - swiftdata-modeling
+  - core-data-stack
+  - persistence-lifecycle-migrations
+  - relationships-data-modeling
+  - background-context-operations
+  - safe-concurrent-data-access
+  # 4. Testing
+  - xctest-unit-integration
+  - swiftui-behavior-testing
+  - xcuittest-ui-automation
+  - async-test-cases
+  - dependency-isolation-mocking
+  - regression-test-coverage
+  # 5. Swift Package Manager
+  - swift-package-manager
+  - dependency-declarations-versioning
+  - modular-package-design
+  - reusable-components-packaging
+  - build-configuration-troubleshooting
+  # 6. Memory and performance
+  - arc-retain-cycle-detection
+  - weak-self-memory-management
+  - instruments-profiling
+  - memory-diagnostics-leaks
+  - efficient-view-rendering
+  - async-data-loading-optimization
+  - resource-management
+  # Core workflow skills
+  - swift
+  - swiftui
+  - mobile-architecture
+  - ponytail
+  - review
+  - verification-before-completion
+  - production-readiness
+guidelines:
+  - "Human Interface Guidelines: Adhere strictly to Apple's Human Interface Guidelines (HIG), ensuring platform-appropriate navigation, typography, dynamic type support, and accessible interactions."
+  - "Native components: Favor SwiftUI-native components and platform-appropriate interaction patterns, adapting layouts to iOS safe areas and adaptive size classes."
+  - "MainActor isolation: Apply @MainActor to UI-facing state, view models, and UI update operations to guarantee main-thread execution and prevent background rendering anomalies."
+  - "Retain cycle prevention: Use [weak self] where needed to prevent retain cycles, particularly in escaping closures, delegate callbacks, and long-lived asynchronous tasks."
+  - "Safe unwrapping: Avoid force-unwrapping (!) and unsafe concurrency patterns unless clearly justified; use optional binding (guard let, if let) and defensive error handling."
+  - "Structured concurrency: Use structured concurrency (async let, TaskGroup) and propagate task cancellation correctly by checking Task.isCancelled during cooperative execution."
+  - "State observation: Choose Combine (ObservableObject, @Published) or the Observation framework (@Observable) according to deployment targets and project architecture."
+  - "Persistence separation: Keep Core Data and SwiftData persistence logic separate from presentation code using dedicated repositories or service layers."
+  - "SwiftUI previews: Use previews or #Preview macros for rapid SwiftUI iteration, employing PreviewProvider where appropriate for the project's supported Xcode version."
+  - "Deterministic testing: Write deterministic XCTest unit and integration tests, isolating external network and system dependencies with protocol-based mocks."
+  - "Dependency management: Manage packages through Swift Package Manager (SPM) with pinned semantic versions, avoiding unnecessary third-party dependencies."
+  - "Empirical profiling: Profile with Instruments (Time Profiler, Allocations, Leaks) before applying performance optimizations, addressing verified bottlenecks first."
+profiles: []
+stages:
+  swift-concurrency:
+    - swift-syntax-semantics
+    - value-reference-semantics
+    - protocol-oriented-design
+    - async-await-structured-concurrency
+    - task-cancellation-error-propagation
+    - actors-sendable-safety
+  swiftui-state:
+    - swiftui-declarative-views
+    - reusable-components-data-flow
+    - property-wrappers-state-ownership
+    - observation-framework
+    - combine-reactive-streams
+    - navigation-forms-lists
+    - async-ui-updates
+  data-persistence:
+    - swiftdata-modeling
+    - core-data-stack
+    - persistence-lifecycle-migrations
+    - relationships-data-modeling
+    - background-context-operations
+    - safe-concurrent-data-access
+  testing:
+    - tdd
+    - test-driven-development
+    - xctest-unit-integration
+    - swiftui-behavior-testing
+    - xcuittest-ui-automation
+    - async-test-cases
+    - dependency-isolation-mocking
+    - regression-test-coverage
+    - qa
+  package-management:
+    - swift-package-manager
+    - dependency-declarations-versioning
+    - modular-package-design
+    - reusable-components-packaging
+    - build-configuration-troubleshooting
+  memory-performance:
+    - arc-retain-cycle-detection
+    - weak-self-memory-management
+    - instruments-profiling
+    - memory-diagnostics-leaks
+    - efficient-view-rendering
+    - async-data-loading-optimization
+    - resource-management
+    - review
+    - verification-before-completion
+    - production-readiness
+metadata:
+  tags: ["ios", "swift", "swiftui", "mobile", "swiftdata", "core-data", "spm", "xctest", "concurrency"]
+  author: "QuirkSphere"
