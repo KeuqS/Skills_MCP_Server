@@ -14,7 +14,7 @@ This MCP server was built to eliminate that bottleneck:
 
 1. **Zero Manual Copy-Pasting**: Point the server at your existing local skills folder and all skills are immediately available.
 2. **On-Demand Retrieval**: Models dynamically search (`search_skills`) and load (`get_skill`) only the relevant skill instructions when a task calls for them, keeping context windows lean.
-3. **Universal Portability**: By implementing the standard Model Context Protocol (MCP SDK 2.2.0), the same local skills library can be accessed across Tasklet, Claude Desktop, Claude.ai Web, Cursor, Windsurf, Zed, and CLI agents.
+3. **Universal Portability**: By implementing the standard Model Context Protocol (MCP SDK 2.2.0), the same local skills library can be accessed across Tasklet, Claude Desktop, Claude.ai Web, Cursor, Windsurf, Zed, Neovim, and CLI agents.
 
 ## Architecture Overview
 
@@ -362,9 +362,261 @@ Add to your workspace `mcp_config.json`:
 
 ---
 
+### 7. Neovim
+
+Neovim connects to Skills MCP Server through MCP-compatible plugins, enabling your in-editor AI assistants to discover, search, and execute tools directly from your personal skills library. Popular plugins supporting MCP include:
+
+- [**`mcphub.nvim`**](https://github.com/ravitemer/mcphub.nvim): A dedicated MCP client manager and gateway for Neovim. It runs a background hub process, parses standard `servers.json` configurations, provides an interactive management interface (`:MCPHub`), and serves tools to other plugins.
+- [**`codecompanion.nvim`**](https://github.com/olimorris/codecompanion.nvim): An extensible AI coding assistant that supports LLM tool-calling and integrates with `mcphub.nvim` to expose MCP tools directly within `:CodeCompanionChat`.
+- [**`avante.nvim`**](https://github.com/yetone/avante.nvim): An AI-powered code companion that dynamically integrates MCP tools and prompt slash commands via `mcphub.nvim` extensions.
+
+> **Note on Configuration Syntax:**
+> Exact configuration syntax depends on the plugin and installed version. In the Neovim ecosystem, `mcphub.nvim` serves as the centralized server manager, while chat plugins like `codecompanion.nvim` and `avante.nvim` consume MCP tools through `mcphub`'s Lua extension APIs. Below, separate configuration examples are provided for each setup.
+
+#### STDIO Configuration (Local Process)
+
+In STDIO mode, Neovim launches Skills MCP Server as a local child process communicating over standard input and standard output.
+
+##### Conceptual Server Configuration
+
+The MCP server requires the virtual-environment Python binary, the module entry point, standard I/O transport, and an explicit `PYTHONPATH` pointing to the repository root:
+
+```lua
+local project_root = "/absolute/path/to/Skills_MCP_Server"
+
+local server_config = {
+  command = project_root .. "/.venv/bin/python",
+  args = {
+    "-m",
+    "src.server",
+    "--transport",
+    "stdio",
+    "--skill-root",
+    vim.fn.expand("~/.claude/skills"), -- Replace with your skills directory
+  },
+  env = {
+    PYTHONPATH = project_root,
+    PYTHONUNBUFFERED = "1",
+  },
+  cwd = project_root,
+}
+```
+
+> **Adapting Configuration Parameters:**
+> - **`project_root`**: Replace `/absolute/path/to/Skills_MCP_Server` with the absolute path to your cloned repository (e.g. `/home/user/Skills_MCP_Server` on Linux/macOS or `C:/Users/user/Skills_MCP_Server` on Windows).
+> - **`command`**: Points to the virtual-environment Python interpreter (`.venv/bin/python` or `.venv/Scripts/python.exe` on Windows). If using `uv`, you can alternatively use `command = "uv"` with `args = { "run", "--directory", project_root, "python", "-m", "src.server", "--transport", "stdio", "--skill-root", "/path/to/skills" }`.
+> - **`args`**: The repository's entry point is `-m src.server`. Specify `--transport stdio` and `--skill-root` pointing to your skills folder.
+> - **`env.PYTHONPATH`**: Required so Python can resolve the `src` package regardless of the current working directory in Neovim.
+> - **`cwd`**: Repository root where `src/` and `profiles/` reside.
+
+#### Remote HTTP / SSE Configuration
+
+Skills MCP Server natively provides a Server-Sent Events (SSE) endpoint for remote or persistent daemon access.
+
+**Endpoint:**
+```
+http://localhost:8080/mcp/sse
+```
+
+##### 1. Start the HTTP/SSE Server
+From your repository root, run the server with `--transport http`:
+
+```bash
+cd /absolute/path/to/Skills_MCP_Server
+source .venv/bin/activate       # On Windows: .venv\Scripts\activate
+python -m src.server --transport http --host 127.0.0.1 --port 8080 --skill-root /path/to/skills
+```
+
+##### 2. Verify the Server is Listening
+Before connecting from Neovim, verify that the HTTP server is healthy and responding:
+
+```bash
+# Verify health endpoint (returns JSON status, skill count, and profile count)
+curl -s http://localhost:8080/health
+
+# Verify root metadata and registered endpoints
+curl -s http://localhost:8080/
+```
+
+Expected health response:
+```json
+{"status":"healthy","skills":42,"profiles":8,"version":"0.1.0"}
+```
+
+##### 3. Configure HTTP/SSE in `servers.json`
+Point your client configuration directly to the SSE endpoint:
+
+```json
+{
+  "mcpServers": {
+    "skills": {
+      "url": "http://localhost:8080/mcp/sse"
+    }
+  }
+}
+```
+
+> **Authentication & Transport Limitations:**
+> - If `AUTH_TOKEN` is configured on the server, include the bearer token in headers (`"headers": { "Authorization": "Bearer <your-token>" }`) or append it as a query parameter: `http://localhost:8080/mcp/sse?token=<your-token>`.
+> - Skills MCP Server implements MCP over Server-Sent Events (`GET /mcp/sse` for event streaming and `POST /mcp/messages` for client messages). Direct HTTP POST JSON-RPC calls to `/mcp/rpc` are rejected; ensure your client uses the SSE endpoint.
+
+#### Plugin-Specific Setup Guides
+
+##### A. `mcphub.nvim` (Central MCP Hub)
+
+[`mcphub.nvim`](https://github.com/ravitemer/mcphub.nvim) provides primary server lifecycle management for Neovim.
+
+1. **Configure Servers (`~/.config/mcphub/servers.json`):**
+   ```json
+   {
+     "mcpServers": {
+       "skills": {
+         "command": "/absolute/path/to/Skills_MCP_Server/.venv/bin/python",
+         "args": [
+           "-m",
+           "src.server",
+           "--transport",
+           "stdio",
+           "--skill-root",
+           "/absolute/path/to/skills"
+         ],
+         "env": {
+           "PYTHONPATH": "/absolute/path/to/Skills_MCP_Server",
+           "PYTHONUNBUFFERED": "1"
+         },
+         "cwd": "/absolute/path/to/Skills_MCP_Server"
+       }
+     }
+   }
+   ```
+   *(For HTTP/SSE, replace the `command`/`args`/`env`/`cwd` block with `"url": "http://localhost:8080/mcp/sse"`).*
+
+2. **Neovim Plugin Specification (`lazy.nvim`):**
+   ```lua
+   {
+     "ravitemer/mcphub.nvim",
+     dependencies = {
+       "nvim-lua/plenary.nvim",
+     },
+     build = "npm install -g mcp-hub@latest",
+     config = function()
+       require("mcphub").setup({
+         port = 3000,
+         config = vim.fn.expand("~/.config/mcphub/servers.json"),
+       })
+     end,
+   }
+   ```
+
+##### B. `codecompanion.nvim` Integration
+
+[`codecompanion.nvim`](https://github.com/olimorris/codecompanion.nvim) integrates with `mcphub.nvim` to expose MCP tools to its chat strategy.
+
+**Neovim Plugin Specification (`lazy.nvim`):**
+```lua
+{
+  "olimorris/codecompanion.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
+    "ravitemer/mcphub.nvim",
+  },
+  opts = {
+    strategies = {
+      chat = {
+        tools = {
+          ["mcp"] = {
+            callback = function()
+              return require("mcphub.extensions.codecompanion")
+            end,
+            description = "Call MCP servers for external tools and skill management",
+            opts = {
+              requires_approval = true,
+            },
+          },
+        },
+      },
+    },
+  },
+}
+```
+
+##### C. `avante.nvim` Integration
+
+[`avante.nvim`](https://github.com/yetone/avante.nvim) dynamically injects active MCP server tools into the assistant's system prompt and registers tool handlers.
+
+**Neovim Plugin Specification (`lazy.nvim`):**
+```lua
+{
+  "yetone/avante.nvim",
+  event = "VeryLazy",
+  version = false,
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "MunifTanjim/nui.nvim",
+    "ravitemer/mcphub.nvim",
+  },
+  opts = {
+    system_prompt = function()
+      local hub = require("mcphub").get_hub_instance()
+      return hub and hub:get_active_servers_prompt() or ""
+    end,
+    custom_tools = function()
+      return {
+        require("mcphub.extensions.avante").mcp_tool(),
+      }
+    end,
+  },
+}
+```
+
+#### Connection Verification
+
+Follow these steps to confirm your Neovim integration is working correctly:
+
+1. **Manual Server Verification:**
+   - **STDIO**: Verify that the process starts cleanly from a terminal:
+     ```bash
+     cd /absolute/path/to/Skills_MCP_Server
+     .venv/bin/python -m src.server --transport stdio --skill-root /path/to/skills
+     ```
+     The process will idle waiting for JSON-RPC input on standard input without crashing or unexpected standard output errors.
+   - **HTTP/SSE**: Confirm the server is reachable:
+     ```bash
+     curl -s http://localhost:8080/health
+     ```
+2. **Plugin Discovery Verification:**
+   - In Neovim, execute:
+     ```vim
+     :MCPHub
+     ```
+   - Confirm that `skills` appears with an active/running status indicator.
+   - Inspect the server details to verify that all 10 MCP tools are registered:
+     `list_skills`, `search_skills`, `get_skill`, `get_skills`, `list_profiles`, `get_profile`, `resolve_profile`, `refresh_skills`, `get_categories`, `get_skill_stats`.
+3. **Execute a Tool Call:**
+   - In CodeCompanion (`:CodeCompanionChat`):
+     > *"Use the list_skills tool to check available skills."*
+   - In Avante (`:AvanteChat`):
+     > *"Search for fastapi skills using search_skills."*
+   - Confirm that the assistant executes the tool call and displays results from your skills library.
+
+#### Neovim Troubleshooting
+
+| Problem | Root Cause | Solution |
+| :--- | :--- | :--- |
+| **`No module named 'mcp'`** | Server launched using system Python instead of the repository virtual environment. | Point `command` directly to `/absolute/path/to/Skills_MCP_Server/.venv/bin/python` (or `.venv\Scripts\python.exe` on Windows). Ensure dependencies were installed via `pip install -e .`. |
+| **`No module named 'src'`** | Working directory is incorrect or `PYTHONPATH` is missing. | Set `"cwd": "/absolute/path/to/Skills_MCP_Server"` and add `"PYTHONPATH": "/absolute/path/to/Skills_MCP_Server"` in the `"env"` block. |
+| **Paths with `~` fail to resolve** | JSON parsers do not perform shell tilde expansion (`~`). | Use full absolute paths in `servers.json` (e.g. `/home/username/...`), or use `vim.fn.expand("~")` when generating paths dynamically in Lua. |
+| **`Address already in use` (Port 8080)** | Another process or previous server instance is already listening on port 8080. | Launch with `--port 8081` (`python -m src.server --transport http --port 8081 ...`) and update the SSE URL to `http://localhost:8081/mcp/sse`. |
+| **HTTP 404 or connection refused on SSE** | Incorrect endpoint URL or unsupported transport protocol. | Ensure the URL points to `http://localhost:8080/mcp/sse`. Test that `curl -s http://localhost:8080/health` returns `healthy` before connecting. |
+| **Tool execution fails or hangs in chat** | Missing `mcp-hub` npm package or process communication error. | Run `npm install -g mcp-hub@latest` to ensure the hub daemon is installed and updated. Check `:MCPHub` logs and `:messages` for detailed error traces. |
+| **Configuration schema mismatch** | Attempting to declare server command lines directly in `avante` or `codecompanion` settings. | Configure the server in `~/.config/mcphub/servers.json`, and reference `mcphub` extensions in the respective plugin configuration options. |
+
+---
+
 ### Cross-Platform Troubleshooting
 
-When configuring Skills MCP Server across editors (Windsurf, Zed, Claude Desktop, Cursor), refer to the following common issues and resolutions:
+When configuring Skills MCP Server across editors (Windsurf, Zed, Claude Desktop, Cursor, Neovim), refer to the following common issues and resolutions:
 
 #### 1. Windows Paths vs. Linux/macOS Paths
 - **JSON Escape Sequences**: In JSON string values on Windows, single backslashes are interpreted as escape characters. Always escape backslashes with double backslashes (e.g. `"C:\\Users\\user\\Skills_MCP_Server"`) or use forward slashes (`"C:/Users/user/Skills_MCP_Server"`).
