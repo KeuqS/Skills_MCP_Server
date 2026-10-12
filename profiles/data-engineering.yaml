@@ -1,0 +1,53 @@
+name: data-engineering
+description: Production-grade data engineering workflow covering pipeline architecture, transformations, data quality, and performance optimization
+version: "1.0.0"
+skills:
+  - sql
+  - python
+  - etl-pipelines
+  - data-modeling
+  - dbt-transformations
+  - data-quality
+  - performance-optimization
+  - dag-orchestration
+  - ponytail
+  - review
+  - verification-before-completion
+profiles: []
+stages:
+  pipeline-design:
+    - plan-eng-review
+    - pipeline-architecture-batch-streaming
+    - data-modeling-schema-design
+    - partitioning-clustering-strategy
+    - dag-orchestration-scheduling
+    - idempotency-retry-recovery
+    - lineage-source-target-mapping
+  transformation:
+    - sql-transformation-models
+    - python-data-processing
+    - batch-streaming-transformation
+    - incremental-processing-cdc
+    - transformation-testing-validation
+    - handling-nulls-duplicates-late-data
+    - ponytail
+  data-quality:
+    - schema-enforcement-validation
+    - freshness-completeness-checks
+    - integrity-uniqueness-consistency
+    - anomaly-detection-statistical-checks
+    - quality-reporting-alerting
+    - quarantine-recovery-strategies
+    - qa
+  performance:
+    - query-execution-plan-optimization
+    - partition-pruning-file-formats
+    - resource-parallelism-tuning
+    - memory-compute-cost-optimization
+    - backfill-replay-strategies
+    - throughput-latency-scalability-monitoring
+    - review
+    - verification-before-completion
+metadata:
+  tags: ["data-engineering", "etl", "sql", "python", "data-quality", "pipeline"]
+  author: "QuirkSphere"
