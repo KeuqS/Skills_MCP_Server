@@ -1,0 +1,49 @@
+name: llm-evals
+description: Production-grade LLM evaluation workflow for AI models, agents, prompt benchmarks, and automated scoring
+version: "1.0.0"
+skills:
+  - llm-evals
+  - prompt-engineering
+  - dataset-curation
+  - llm-judge-rubrics
+  - benchmark-execution
+  - regression-testing
+  - ponytail
+  - review
+  - verification-before-completion
+profiles: []
+stages:
+  dataset-curation:
+    - golden-dataset-curation
+    - use-case-representative-sampling
+    - adversarial-edge-case-generation
+    - synthetic-data-generation-filtering
+    - dataset-versioning-leakage-prevention
+    - dataset-coverage-balance-audit
+  eval-design:
+    - eval-objectives-criteria
+    - rubric-design-scoring
+    - deterministic-assertions
+    - llm-judge-calibration
+    - human-eval-agreement
+    - core-eval-metrics-safety-tools
+  execution:
+    - reproducible-run-tracking
+    - batch-model-eval-matrix
+    - latency-tokens-cost-tracking
+    - retry-timeout-failure-capture
+    - parallel-execution-rate-limits
+    - structured-traces-results-storage
+    - ponytail
+  analysis:
+    - failure-clustering-root-cause
+    - prompt-model-regression-detection
+    - baseline-threshold-comparison
+    - evaluator-reliability-variance
+    - evidence-based-prompt-refinement
+    - golden-regression-test-suite
+    - review
+    - verification-before-completion
+metadata:
+  tags: ["ai", "llm", "evals", "agents", "benchmarks", "prompt-engineering"]
+  author: "QuirkSphere"
