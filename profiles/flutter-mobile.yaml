@@ -1,0 +1,57 @@
+name: flutter-mobile
+description: Production-grade cross-platform Flutter and Dart mobile application development workflow
+version: "1.0.0"
+skills:
+  - flutter
+  - dart
+  - riverpod-bloc
+  - material-cupertino
+  - responsive-adaptive-ui
+  - widget-testing
+  - integration-testing
+  - ponytail
+  - review
+  - verification-before-completion
+  - production-readiness
+profiles: []
+stages:
+  design:
+    - ui-ux-pro-max
+    - mobile-first-ui-ux
+    - material-cupertino-widgets
+    - reusable-widget-composition
+    - responsive-adaptive-layouts
+    - theme-colors-darkmode
+    - accessibility-localization-l10n
+    - impeccable
+  implementation:
+    - dart-core-null-safety
+    - state-management-riverpod-bloc
+    - navigation-routing-deeplinks
+    - rest-api-serialization-errors
+    - auth-secure-storage-env
+    - async-lifecycle-dependency-injection
+    - ponytail
+  testing:
+    - tdd
+    - test-driven-development
+    - dart-unit-tests
+    - flutter-widget-tests
+    - critical-journey-integration-tests
+    - mock-services-api
+    - state-navigation-testing
+    - error-edge-case-coverage
+    - qa
+  build-verification:
+    - android-ios-build-verification
+    - platform-config-dependencies
+    - memory-leak-profiling
+    - app-size-asset-optimization
+    - release-startup-performance
+    - static-analysis-formatting-flutter
+    - review
+    - verification-before-completion
+    - production-readiness
+metadata:
+  tags: ["flutter", "dart", "mobile", "ios", "android", "ui"]
+  author: "QuirkSphere"
