@@ -1,0 +1,52 @@
+name: kubernetes-cloud-native
+description: Production-grade Kubernetes cloud-native workflow covering manifest design, Helm packaging, security scanning, and cluster verification
+version: "1.0.0"
+skills:
+  - kubernetes
+  - helm
+  - cloud-native
+  - devops
+  - container-security
+  - rbac-security
+  - ponytail
+  - review
+  - verification-before-completion
+profiles: []
+stages:
+  manifest-design:
+    - plan-eng-review
+    - deployment-service-specs
+    - ingress-traffic-routing
+    - configmap-secret-management
+    - labels-selectors-namespaces
+    - env-reusable-manifests
+    - probes-replicas-rollout-strategy
+  helm-packaging:
+    - helm-chart-templates
+    - values-parameterization
+    - values-schema-validation
+    - chart-app-versioning
+    - dependency-release-packaging
+    - env-overrides-safe-upgrades
+    - ponytail
+  security-scan:
+    - pod-security-standards-contexts
+    - network-policy-segmentation
+    - rbac-least-privilege
+    - secret-protection-audit
+    - container-vulnerability-scanning
+    - capability-privilege-detection
+    - serviceaccount-workload-identity
+  verification:
+    - kubeconform-schema-validation
+    - server-side-dry-run
+    - helm-lint-template-render
+    - probe-health-verification
+    - resource-requests-limits-validation
+    - rollout-failure-rollback-readiness
+    - policy-checks-smoke-tests
+    - review
+    - verification-before-completion
+metadata:
+  tags: ["kubernetes", "k8s", "helm", "devops", "cloud-native", "security"]
+  author: "QuirkSphere"
